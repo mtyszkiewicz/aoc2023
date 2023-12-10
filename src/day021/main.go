@@ -7,41 +7,11 @@ import (
 	"os"
 
 	"github.com/alecthomas/participle/v2"
+	"github.com/mtyszkiewicz/aoc2023/pkg/day02"
 )
 
-type ColorCount struct {
-	Count int    `parser:"@Int"`
-	Color string `parser:"@('red' | 'green' | 'blue')"`
-}
-
-type Draw struct {
-	ColorCounts []*ColorCount `parser:"@@ (',' @@)*"`
-}
-
-type Game struct {
-	Id    int     `parser:"'Game' @Int':'"`
-	Draws []*Draw `parser:"@@ (';' @@)*"`
-}
-
-func (game *Game) IsPossible(maxColors map[string]int) bool {
-	for _, draw := range game.Draws {
-		for _, colorCount := range draw.ColorCounts {
-			if colorCount.Count > maxColors[colorCount.Color] {
-				return false
-			}
-		}
-	}
-	return true
-}
-
-var maxColors = map[string]int{
-	"red":   12,
-	"green": 13,
-	"blue":  14,
-}
-
 func main() {
-	parser := participle.MustBuild[Game]()
+	parser := participle.MustBuild[day02.Game]()
 	scanner := bufio.NewScanner(os.Stdin)
 
 	result := 0
@@ -50,7 +20,7 @@ func main() {
 		if err != nil {
 			log.Panic(err)
 		}
-		if !game.IsPossible(maxColors) {
+		if !game.IsPossible() {
 			continue
 		}
 		result += game.Id
