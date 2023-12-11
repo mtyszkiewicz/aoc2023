@@ -30,11 +30,7 @@ func main() {
 	}
 	result := 0
 	for i, n := range matches {
-		lastIndex := i + 1 + n
-		if lastIndex > nCards {
-			lastIndex = nCards
-		}
-		for j := i + 1; j < lastIndex; j++ {
+		for j := i + 1; j < i+1+n && j < nCards; j++ {
 			copies[j] += 1 + copies[i]
 		}
 		result += 1 + copies[i]
