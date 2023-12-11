@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"log"
-	"math"
 	"os"
 
 	"github.com/alecthomas/participle/v2"
@@ -15,25 +14,30 @@ func main() {
 	parser := participle.MustBuild[day04.ScratchCard]()
 	scanner := bufio.NewScanner(os.Stdin)
 
-	matchCounts := []int{}
+	matches := []int{}
 	for scanner.Scan() {
 		card, err := parser.ParseString("", scanner.Text())
 		if err != nil {
 			log.Panic(err)
 		}
-		matchCounts = append(matchCounts, card.MatchCount())
+		matches = append(matches, card.MatchCount())
 	}
 
-	result := 0
-	copyCounts := make([]int, len(matchCounts))
-	for i := 0; i < len(matchCounts); i++ {
-		copyCounts[i] = 0
+	nCards := len(matches)
+	copies := make([]int, nCards)
+	for i := 0; i < nCards; i++ {
+		copies[i] = 0
 	}
-	for i, count := range matchCounts {
-		for j := i + 1; j < int(math.Min(float64(i+1+count), float64(len(matchCounts)))); j++ {
-			copyCounts[j] += 1 + copyCounts[i]
+	result := 0
+	for i, n := range matches {
+		lastIndex := i + 1 + n
+		if lastIndex > nCards {
+			lastIndex = nCards
 		}
-		result += 1 + copyCounts[i]
+		for j := i + 1; j < lastIndex; j++ {
+			copies[j] += 1 + copies[i]
+		}
+		result += 1 + copies[i]
 	}
 	fmt.Println(result)
 }
